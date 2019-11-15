@@ -1,0 +1,44 @@
+.team-head{
+    text-align: center;
+    padding-top: 70px;
+    padding-left: ;
+    padding-right: ;
+    /* padding-bottom: 330px; */
+    /* ; */
+}
+.main{
+    background-image: url(../images/bg.png);
+    background-repeat: repeat-x;
+    /* overflow: auto; */
+}
+.our-team{
+    /* background-color: black; */
+    width: 1170px;
+    margin: auto;
+    /* text-align: center; */
+}
+
+.team-floater{
+    background-image: url(../images/def.png);
+    float: left;
+    width:270px;
+    height:313px ;
+    padding-right:30px ;
+}
+.last-floater{
+    padding-right: 0px;
+}
+
+.btn{
+    position: absolute;
+    bottom: -20px;
+    left: 42px;
+    /* top: 4px; */
+    /* right: 0px; */
+}
+div.team1{
+    position: relative;
+    background-image: url(../images/b.png);
+    display: none;
+    /* overflow: auto; */
+}
