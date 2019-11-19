@@ -309,12 +309,17 @@ a.ul2-li-home{
 }
 .para4{
     width: 24%;
+    padding-bottom: 50px;
 }
 
-
-
-
-
+/* lister */
+.list1{
+    list-style-image: url(../images/list2.png);
+    /* padding-left: 160px; */
+}
+.list1-li{
+    
+}
 
 
 
@@ -346,7 +351,7 @@ a.ul2-li-home{
 .footer-right1{
     width: 360px;
 }
-.f0-p,{
+.f0-p{
     padding-bottom: 28px;
 }
 .top{
