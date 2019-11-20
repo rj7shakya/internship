@@ -1,7 +1,9 @@
 /* header */
-header{
+.head{
     height: 100px;
     background-color: white;
+    width: 1170px;
+    margin: 0 auto;
 }
 .width{
     width: 1170px;
@@ -28,7 +30,7 @@ header{
     font-family: "Roboto";
     color: #3f4244;
     line-height: 44px;
-    padding: 17px 0px;
+    padding: 28px 0px;
     float: left;
     padding-left: 10px;
 }
