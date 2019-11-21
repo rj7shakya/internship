@@ -5,9 +5,6 @@
     margin: 0 auto;
     overflow: auto;
 }
-*{
-    outline: 2px dotted yellow;
-}
 .width{
     width: 73.125em;
     margin: 0 auto;
