@@ -5,6 +5,9 @@
     width: 1170px;
     margin: 0 auto;
 }
+*{
+    outline: 1px dotted yellow;
+}
 .width{
     width: 1170px;
     margin: 0 auto;
