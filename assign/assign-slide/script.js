@@ -10,8 +10,14 @@ function setWidth(slideIndex){
     imgCont[0].style.width = WIDTH*slideIndex +'px';
 }
 
+var act = document.getElementsByClassName('active');
+// act[0].style.backgroundColor='green';
+console.log(act);
+
 var tag = document.getElementsByTagName('img');
 var slideIndex=1;
+
+
 
 // for a tag
 var left = document.createElement('a');
@@ -86,3 +92,9 @@ function slide(n){
 }
 change(1);
 
+
+
+
+function Cara(height,width,){
+
+}
