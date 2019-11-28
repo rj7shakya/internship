@@ -1,0 +1,10 @@
+.app{
+    height: 400px;
+    width: 400px;
+    background-color: #dfdfdf;
+    position: relative;
+}
+.box{
+    position: absolute;
+    background: rebeccapurple;
+}
