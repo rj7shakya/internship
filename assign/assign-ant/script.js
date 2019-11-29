@@ -1,24 +1,27 @@
-;(function(){ 
+(function(){ 
     function Box(parentElement){
         this.x = 10;
         this.y = 10;
-        var MAX_WIDTH = 400;
+        var MAX_WIDTH = 700;
         var MAX_HEIGHT = 400;
         this.speedx =1;
         this.speedy=1;
-        this.width = 20;
-        this.height =20;
+        this.width = 47;
+        this.height =54;
         this.element =null;
         this.parentElement = parentElement;
         var that = this;
 
         this.init = function(){
-            var box = document.createElement('div');
+            var box = document.createElement('a');
             box.style.height = this.height+'px';
             box.style.width = this.width+'px';
             box.classList.add('box');
             this.parentElement.appendChild(box);
+            var i = document.createElement('img');
+            i.src = 'images/up.gif';
             this.element = box;
+            box.appendChild(i);
             this.element.onclick = this.boxClicked.bind(this);
             this.draw(); 
             return this;
@@ -31,30 +34,45 @@
 
         this.boxClicked = function() {
             console.log('boxClicked', this.width);
+            var del = document.getElementsByTagName('a');
+            for(var i=0;i<del.length;i++){
+                if(Math.abs(this.x-del[i].offsetLeft)>=0 && Math.abs(this.x-del[i].offsetLeft)<1){
+                    del[i].parentElement.removeChild(del[i]);
+                }else if(Math.abs(this.x-del[i].offsetLeft)==0 ){
+                    del[i].parentElement.removeChild(del[i]);
+                }
+            }
+            
         }
         this.checkCollision = function(boxes){
             for(var i=0;i<boxes.length-1;i++){
-                this.checkborder();
-                // if( this.x === boxes[i].x && this.y === boxes[i].y) continue; 
-                
+                this.checkborder(); 
                 if (this.x < boxes[i].x + boxes[i].width &&
                     this.x + this.width > boxes[i].x &&
                     this.y < boxes[i].y + boxes[i].height &&
                     this.y + this.height > boxes[i].y) {
-                        boxes[i].speedx = - boxes[i].speedx;
+                        // boxes[i].speedx = - boxes[i].speedx;
                         boxes[i].speedy = -boxes[i].speedy;
-                        this.speedx = - this.speedx;
+                        // this.speedx = - this.speedx;
                         this.speedy = -this.speedy;
-                        // console.log(boxes[i].width)
                 }
             }
         }
 
         this.checkborder = function(){
             if(this.x + this.width > MAX_WIDTH || this.x<0){
-                this.speedx =  -this.speedx;
+                // this.speedx =  -this.speedx;
             }else if(this.y + this.width > MAX_HEIGHT || this.y<0){
                 this.speedy = -this.speedy;
+                this.changed(this.speedy);
+            }
+        }
+
+        this.changed = function(speedy){
+            if(this.speedy>0){
+                this.element.childNodes[0].src='images/down.gif';
+            }else{
+                this.element.childNodes[0].src='images/up.gif';
             }
         }
 
@@ -64,7 +82,8 @@
         }
 
         this.move = function() {
-            this.x += this.speedx;
+            // this.x += this.speedx;
+            this.changed(this.speedy);
             this.y += this.speedy;
             this.draw();
         }
@@ -76,7 +95,7 @@
 
     function Game(parentElement, boxCount){
         var boxes=[];
-        var MAX_WIDTH = 400;
+        var MAX_WIDTH = 700;
         var MAX_HEIGHT = 400;
         this.parentElement = parentElement;
         this.boxCount = boxCount ;
@@ -122,5 +141,5 @@
         }
     }
     var parentElement = document.getElementById('app');
-    new Game(parentElement,8).startGame();
+    new Game(parentElement,10).startGame();
 })();
