@@ -84,7 +84,10 @@
         this.move = function() {
             // this.x += this.speedx;
             this.changed(this.speedy);
-            this.y += this.speedy;
+            // this.y += Math.getRandomArbitrary(0,this.speedy);
+            // this.x += Math.getRandomArbitrary(0,this.speedx);
+            this.y +=this.speedy;
+            console.log(this.speedy);
             this.draw();
         }
     }    
