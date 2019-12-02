@@ -18,6 +18,12 @@ function Car(parent){
     this.startpg = document.createElement('h2');
     this.speed = 40;
     var f_score;
+    this.intv;
+
+    var road = document.createElement('img');
+    var car = document.createElement('img');
+    var game_over = document.createElement('div');
+    var obs_arr;
 
     this.show = function(car){
         car.style.left = this.x+'px';
@@ -60,6 +66,8 @@ function Car(parent){
             }
             this.updateScore(this.score);
             topVal = -800;
+            clearInterval(this.intv);
+            this.upSpeed(this.speed);
         }
         road.style.top = topVal+'px';
     }
@@ -73,6 +81,7 @@ function Car(parent){
         
         f_score = this.score;
         this.h2.innerHTML='Your score is '+f_score;
+        clearInterval(this.intv);
     }
 
     this.checkCrash = function(car,obs_arr,game_over){
@@ -91,9 +100,17 @@ function Car(parent){
         }
     }
 
+    this.upSpeed = function(score){
+        this.intv =setInterval(function(){
+            this.movebg(road);
+            this.moveobs(obs_arr[0]);
+            this.moveobs(obs_arr[1]);
+            this.checkCrash(car,obs_arr,game_over);
+        }.bind(this),this.speed);
+    }
+
     this.init  = function(){
         this.score=0;
-        var road = document.createElement('img');
         road.classList.add('road');
         road.src = 'images/3-lane.png';
         this.parent.appendChild(road);
@@ -101,14 +118,6 @@ function Car(parent){
         road.height = 2000;
         road.style.position = 'absolute';
         road.style.top = -1500 +'px';
-        setInterval(function(){
-            this.movebg(road);
-            this.moveobs(obs_arr[0]);
-            this.moveobs(obs_arr[1]);
-            this.checkCrash(car,obs_arr,game_over);
-        }.bind(this),this.speed);
-        
-        var car = document.createElement('img');
         car.classList.add('car');
         car.src = 'images/car.png';
         this.parent.appendChild(car);
@@ -119,7 +128,7 @@ function Car(parent){
         this.show(car);
 
         var obst = new obs(this.parent);
-        var obs_arr = obst.createObs();
+        obs_arr = obst.createObs();
         
         var scor = document.createElement('div');
         this.parent.appendChild(scor);
@@ -128,7 +137,6 @@ function Car(parent){
         this.scoret.innerHTML='Score :'+this.score;
         scor.style.marginLeft=180+'px'; 
 
-        var game_over = document.createElement('div');
         this.parent.appendChild(game_over);
         game_over.style.position = 'absolute';
         var h1 = document.createElement('h1');
@@ -151,11 +159,11 @@ function Car(parent){
         this.startpg.style.marginLeft=170+'px';
         this.startpg.style.marginTop=150+'px';
         this.startpg.style.display='none';
+        
+        this.upSpeed(this.speed);
         return this;
     }
 
-    
-    
     this.shiftCalc = function(laneno){
         return 40+this.SHIFT*(laneno-1);
     }
