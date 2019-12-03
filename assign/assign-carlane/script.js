@@ -112,7 +112,6 @@ function Car(parent){
         f_score = this.score;
         this.h2.innerHTML='Your score is '+f_score;
         clearInterval(this.intv);
-        // console.log(bull);
     }
 
     this.checkCrash = function(car,obs_arr,game_over){
