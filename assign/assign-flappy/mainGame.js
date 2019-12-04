@@ -19,7 +19,6 @@ function startGame(){
         var s = setInterval(function(){
             bird.y+=bird.speed;
             flappy.showbg();
-        
             for(var i=0;i<obs_arr.length;i++){
                 obs_arr[i].x-=5;
                 obs_arr[i].update();
@@ -33,6 +32,8 @@ function startGame(){
                 int = obs_arr[i].checkCollision(bird);
                 if(int){
                     clearInterval(s);
+                    flappy.clear();
+                    var gm = new gameover(100,100,60,230);
                 }
             }
             flappy.clear();
@@ -50,6 +51,8 @@ document.onkeypress = function(evt) {
         bird.y-=bird.up;
     }else if(charStr == 's'){
         bird.speed =0;
+    }else if(charStr == 'r'){
+        startGame();
     }
 }.bind(this);
 

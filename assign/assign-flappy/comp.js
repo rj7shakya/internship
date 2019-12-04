@@ -22,9 +22,9 @@ function bird(width,height,x,y){
     this.update = function(score){
         img.onload = function(){
             ctx.drawImage(img,that.x,that.y);
-            ctx.font = 30+"px Arial";
+            ctx.font = 60+"px Arial";
             ctx.fillStyle = 'white';
-            ctx.fillText(score, 60, 60);
+            ctx.fillText(score, 140, 60);
         };
     img.src = 'images/yellowbird-downflap.png';
     }
@@ -42,6 +42,20 @@ function start(height,width,x,y){
         ctx.drawImage(img,that.x,that.y);
     };
     img.src = 'images/message.png';
+}
+
+function gameover(height,width,x,y){
+    this.width=width;
+    this.height=height;
+    this.x=x;
+    this.y=y;
+    var that =this;
+    ctx = flappy.context;
+    img = document.createElement('img');
+    img.onload = function () {
+        ctx.drawImage(img,that.x,that.y);
+    };
+    img.src = 'images/gameover.png';
 }
 
 function pipe(width,height,x,y){
