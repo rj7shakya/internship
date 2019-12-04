@@ -1,6 +1,7 @@
-var flappy= {
-    canvas : document.createElement("canvas"),
-    start : function(){
+
+function flappy(){
+    this.canvas = document.createElement("canvas");
+    this.start = function(){
         this.canvas.width=300;
         this.canvas.height=500;
         this.context = this.canvas.getContext("2d");
@@ -9,11 +10,11 @@ var flappy= {
         this.canvas.style.borderWidth=1+'px';
         this.canvas.style.borderColor='black';
         this.l=0;
-    },
-    clear : function(){
+    }
+    this.clear = function(){
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
-    },
-    showbg : function(){
+    }
+    this.showbg = function(){
         ctx = this.context;
         var img2 = document.createElement('img');
         this.l-=2;

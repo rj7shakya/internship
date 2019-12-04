@@ -4,6 +4,7 @@ var obss;
 var obs_arr= new Array();
 var int;
 var scored=0;
+var flappy = new flappy();
 
 function startGame(){
     flappy.start();
