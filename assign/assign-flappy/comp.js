@@ -8,7 +8,7 @@ function bird(width,height,x,y){
     this.width=width;
     this.height=height;
     this.up=100; 
-    this.speed =10;
+    this.speed =8;
     this.x=x;
     this.y=y;
     var that = this;
@@ -23,7 +23,7 @@ function bird(width,height,x,y){
         img.onload = function(){
             ctx.drawImage(img,that.x,that.y);
         };
-        img.src = 'images/yellowbird-downflap.png';
+    img.src = 'images/yellowbird-downflap.png';
     }
 }
 
@@ -57,6 +57,24 @@ function pipe(width,height,x,y){
         if(this.x < -70){
             this.x=300;
             this.y=getRandomInt(4,9)*50;
+            return true;
         }
+    }
+    this.checkCollision = function(bird){
+        var collision = false;
+        if (bird.x < this.x + this.width &&
+            bird.x + bird.width > this.x &&
+            bird.y < this.y + this.height &&
+            bird.y + bird.height > this.y){
+                collision=true;
+        }else if(bird.x < this.x + this.width &&
+            bird.x + bird.width > this.x &&
+            bird.y < this.y-470 + this.height &&
+            bird.y + bird.height > this.y-470) {
+                collision=true;  
+        }else if(bird.y+bird.height>=flappy.canvas.height){
+                collision=true;
+        }
+        return collision;
     }
 }

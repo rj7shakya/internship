@@ -21,12 +21,16 @@ var flappy= {
             this.l=0;
         }
         var that = this;
-        console.log(img2.style.width);
         img2.onload = function () {
             ctx.drawImage(img2,that.l,0);
             ctx.drawImage(img2,288+that.l,0);
         };
         img2.src = 'images/background-day.png';
+    },
+    showscore : function(score){   
+        ctx = this.context;
+        ctx.font = 30+"px Arial";
+        ctx.fillText("score"+score, 10, 60);
     }
 
 }
