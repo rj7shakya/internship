@@ -4,7 +4,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function bird(width,height,x,y){
+function bird(width,height,x,y,flapp){
     this.width=width;
     this.height=height;
     this.up=70; 
@@ -12,7 +12,8 @@ function bird(width,height,x,y){
     this.x=x;
     this.y=y;
     var that = this;
-    ctx = flappy.context;
+    ctx = flapp.context;
+    console.log(flapp === this);
     var img = document.createElement('img');
     img.onload = function(){
         ctx.drawImage(img,that.x,that.y);
@@ -30,13 +31,13 @@ function bird(width,height,x,y){
     }
 }
 
-function start(height,width,x,y){
+function start(height,width,x,y,flapp){
     this.width=width;
     this.height=height;
     this.x=x;
     this.y=y;
     var that =this;
-    ctx = flappy.context;
+    ctx = flapp.context;
     img = document.createElement('img');
     img.onload = function () {
         ctx.drawImage(img,that.x,that.y);
@@ -44,13 +45,13 @@ function start(height,width,x,y){
     img.src = 'images/message.png';
 }
 
-function gameover(height,width,x,y){
+function gameover(height,width,x,y,flapp){
     this.width=width;
     this.height=height;
     this.x=x;
     this.y=y;
     var that =this;
-    ctx = flappy.context;
+    ctx = flapp.context;
     img = document.createElement('img');
     img.onload = function () {
         ctx.drawImage(img,that.x,that.y);
@@ -58,13 +59,13 @@ function gameover(height,width,x,y){
     img.src = 'images/gameover.png';
 }
 
-function pipe(width,height,x,y){
+function pipe(width,height,x,y,flapp){
     this.width=width;
     this.height=height;
     this.x=x;
     this.y=y;
     var that = this;
-    ctx = flappy.context;
+    ctx = flapp.context;
     var img = document.createElement('img');
     img.onload = function () {
         ctx.drawImage(img,that.x,that.y);
@@ -103,7 +104,7 @@ function pipe(width,height,x,y){
             bird.y < this.y-470 + this.height &&
             bird.y + bird.height > this.y-470) {
                 collision=true;  
-        }else if(bird.y+bird.height>=flappy.canvas.height){
+        }else if(bird.y+bird.height>=flapp.canvas.height){
                 collision=true;
         }
         return collision;

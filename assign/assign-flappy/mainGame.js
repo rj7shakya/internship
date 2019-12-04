@@ -4,22 +4,22 @@ var obss;
 var obs_arr= new Array();
 var int;
 var scored=0;
-var flappy = new flappy();
+var flapp = new flappy();
 
-function startGame(){
-    flappy.start();
-    flappy.showbg();
-    var st = new start(100,100,60,60);
-    console.log(st)
+
+function startGame(flap){
+    flap.start();
+    flap.showbg();
+    var st = new start(100,100,60,60,flap);
     play = function(){
-        flappy.showbg();
-        bird = new bird(34,24,10,120);
+        flap.showbg();
+        bird = new bird(34,24,10,120,flap);
         for(var i=0;i<2;i++){
-            obs_arr[i] = new pipe(50,320,(i+1)*200+100,getRandomInt(4,9)*50);
+            obs_arr[i] = new pipe(50,320,(i+1)*200+100,getRandomInt(4,9)*50,flap);
         }
         var s = setInterval(function(){
             bird.y+=bird.speed;
-            flappy.showbg();
+            flap.showbg();
             for(var i=0;i<obs_arr.length;i++){
                 obs_arr[i].x-=5;
                 obs_arr[i].update();
@@ -33,14 +33,14 @@ function startGame(){
                 int = obs_arr[i].checkCollision(bird);
                 if(int){
                     clearInterval(s);
-                    flappy.clear();
-                    var gm = new gameover(100,100,60,230);
+                    flap.clear();
+                    var gm = new gameover(100,100,60,230,flap);
                 }
             }
-            flappy.clear();
+            flap.clear();
         },100)
     }
-    flappy.canvas.addEventListener('click', function() {
+    flap.canvas.addEventListener('click', function() {
         play(); 
     }, false);
 }
@@ -53,10 +53,13 @@ document.onkeypress = function(evt) {
     }else if(charStr == 's'){
         bird.speed =0;
     }else if(charStr == 'r'){
-        startGame();
+        startGame(flapp);
     }
 }.bind(this);
 
 
 
-startGame();
+startGame(flapp);
+
+var f = new flappy();
+// startGame(f);
