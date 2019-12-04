@@ -7,7 +7,7 @@ function getRandomInt(min, max) {
 function bird(width,height,x,y){
     this.width=width;
     this.height=height;
-    this.up=100; 
+    this.up=70; 
     this.speed =8;
     this.x=x;
     this.y=y;
@@ -19,12 +19,29 @@ function bird(width,height,x,y){
     };
     img.src = 'images/yellowbird-downflap.png';
 
-    this.update = function(){
+    this.update = function(score){
         img.onload = function(){
             ctx.drawImage(img,that.x,that.y);
+            ctx.font = 30+"px Arial";
+            ctx.fillStyle = 'white';
+            ctx.fillText(score, 60, 60);
         };
     img.src = 'images/yellowbird-downflap.png';
     }
+}
+
+function start(height,width,x,y){
+    this.width=width;
+    this.height=height;
+    this.x=x;
+    this.y=y;
+    var that =this;
+    ctx = flappy.context;
+    img = document.createElement('img');
+    img.onload = function () {
+        ctx.drawImage(img,that.x,that.y);
+    };
+    img.src = 'images/message.png';
 }
 
 function pipe(width,height,x,y){
