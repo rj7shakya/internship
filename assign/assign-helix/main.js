@@ -7,8 +7,8 @@ function move(b1,x,y){
     // b1.circle(this.x,this.y,10);
     var speed=5;
     var sr=0.5;
-    var r=0.1;
-    var fps = 4;
+    var r=0;
+    var fps = 10;
     var now;
     var then = Date.now();
     var interval = 1000/fps;
@@ -17,14 +17,15 @@ function move(b1,x,y){
     var rad;
     var c=0;
     var d=14;
-    b1.clear();
-    for(var i=0;i<10;i++){
-        for(var j=0;j<15;j++){
-            rad=c+r;
-            b1.circle(this.x+(j*25),this.y+(i*25),rad);
-            console.log(r);
-        }
-    }
+    var speed=0.88;
+    // b1.clear();
+    // for(var i=0;i<10;i++){
+    //     for(var j=0;j<15;j++){
+    //         rad=c+r;
+    //         b1.circle(this.x+(j*25),this.y+(i*25),rad);
+    //         console.log(r);
+    //     }
+    // }
 
 
     function repeat() {
@@ -34,24 +35,37 @@ function move(b1,x,y){
         if (delta > interval) {
             then = now - (delta % interval);
             b1.clear();
+            for(var k=0;k<2;k++){
+                var z = k===0?1:-1;
+                c=0;
             for(var i=0;i<15;i++){
                 for(var j=0;j<10;j++){
-                    var v=y = 250/2 + 90 * Math.sin((that.x+(c*30))/100);
-                    var u=y = 250/2 + 90 * Math.cos((that.x+(c*30))/100);
-                    b1.circle(that.x+(i*30),v+(j*20),c);
-                    // b1.circle(that.x+(i*30),u+(j*20),c);
+                    var v=y = 250/2 + 90 * Math.sin(z*(that.x+(c*30))/100);
+                    // var u=y = 250/2 + 60 * Math.sin(-(that.x+(c*30))/100);
+                    b1.circle(that.x+(i*30),v+(j*20),r);
+                    // b1.circle(that.x+(i*30),u+(j*20),r);
                 }
                 c+=0.88;
-                d-=0.88;
-                if(c>=14){
-                    c=0;
-                }else if(c<0){
-                    c=14
-                }
+                // d-=0.88;
+                // if(c>=14){
+                //     c=0;
+                // }else if(c<0){
+                //     c=14
+                // }
                 if(d<0){
                     d=14;    
                 }
+                r+=speed;
+                if(r>=14 ){
+                    r=13.2;
+                    speed=-speed;
+                }else if(r<=0.88){
+                    r=0.88;
+                    speed=-speed;
+                }
             }
+            }
+            // requestAnimationFrame(repeat);
         }
       }
     repeat();
