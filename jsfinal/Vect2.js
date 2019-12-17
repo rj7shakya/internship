@@ -6,9 +6,9 @@ class Vec2{
     length(){
         return Math.sqrt(this.x*this.x+this.y*this.y);
     }
-    // add(vec){
-    //     return new Vec2(vec.x+this.x,vec.y+this.y);
-    // }
+    add(vec){
+        return new Vec2(vec.x+this.x,vec.y+this.y);
+    }
     subtract(vec){
         return new Vec2(this.x - vec.x, this.y - vec.y);
     }
@@ -20,7 +20,7 @@ class Vec2{
         return (this.x*vec.x+this.y*vec.y);
     }
     cross(vec){
-        return (this.x*vec.y+this.y*vec.x);
+        return (this.x*vec.y-this.y*vec.x);
     }
     normalize(){
         var len = this.length();
@@ -58,6 +58,6 @@ Vec2.prototype.multiply = function(vec){
     return new Vec2(this.x*vec.x,this.y*vec.y);
 }
 
-Vec2.prototype.add = function(vec){
-    return new Vec2(vec.x+this.x,vec.y+this.y);
-}
+// Vec2.prototype.add = function(vec){
+//     return new Vec2(vec.x+this.x,vec.y+this.y);
+// }
