@@ -27,13 +27,18 @@ class Veh{
     this.imgf = new Image();
     this.img0 = new Image();
     this.imgb = new Image();
+    this.imgb.src='images/brake-normal.png';
     this.imgg = new Image();
+    this.imgg.src='images/gas-normal.png';
     this.boost = new Image();
     this.boost.src = 'images/meter-boost.png';
     this.rpm = new Image();
     this.rpm.src = 'images/meter-rpm.png';
     this.hill = new Image();
     this.hill.src = 'images/hill1.png';
+    this.needle = new Image();
+    this.needle.src = 'images/needle.png';
+    this.score=0;
   }
   set sweightm(y){
     this.weightm.position.y = y;
@@ -63,6 +68,12 @@ class Veh{
   get air(){
     return this.onair;
   }
+  get gscore(){
+    return this.score;
+  }
+  set gscore(s){
+    this.score=s;
+  }
   
   car(x,y,context){
     var width=80;
@@ -78,7 +89,6 @@ class Veh{
     }
     if(this.ang){
       // context.save();
-      // context.setTransform(1, 0, 0, 1, this.sweightmx+80/2,this.sweightm+40/2);
       context.translate(this.sweightmx+80/2,this.sweightm+40/2);
       context.rotate(this.ang*Math.PI/180);
       context.translate(-this.sweightmx-80/2,-this.sweightm-40/2);
@@ -100,12 +110,12 @@ class Veh{
     // this.weight2.position.y=y+height+10;
     // this.weight3.position.x=x+width-10;
     // this.weight3.position.y=y+10+height;
-    this.drawCir(x+width/2,y-10,this.weight,context,2);
-    this.drawCir(x+10,y+height+10,this.weight2,context);
-    this.drawCir(x+width-10,y+10+height,this.weight3,context);
+    this.drawH(x+width/2,y-10,this.weight,context);
+    this.drawCir(x+10,y+height+10,this.weight2,context,null);
+    this.drawCir(x+width-10,y+10+height,this.weight3,context,null);
     context.restore();
   }
-  drawCir(x,y,weight,context,n){
+  drawCir(x,y,weight,context){
     var springPoint = new Vec2(x,y);
     var distance = springPoint.subtract(weight.position);
     distance.setLength(distance.length()-this.springLength);
@@ -113,17 +123,20 @@ class Veh{
     weight.velocity=weight.velocity.add(springForce);
     weight.update(canvas);
     context.beginPath();
-    
-    if(n){
-      this.imgc.src='images/head.png';
-      console.log(this.imgc.src);
-    }else{
-      this.imgc.src='images/tire.png';
-    }
-    // console.log(this.imgc)
+    this.imgc.src='images/tire.png';
     context.drawImage(this.imgc,x-20,y-20,40,40);
-    // context.arc(weight.position.x, weight.position.y, weight.radius,0, Math.PI * 2, false);
-    // context.fill();
+  }
+  drawH(x,y,weight,context){
+    var springPoint = new Vec2(x,y);
+    var distance = springPoint.subtract(weight.position);
+    distance.setLength(distance.length()-this.springLength);
+    var springForce = distance.scale(this.k);
+    weight.velocity=weight.velocity.add(springForce);
+    weight.update(canvas);
+    context.beginPath();
+    var imgh = new Image();
+    imgh.src='images/head.png';
+    context.drawImage(imgh,x-20,y-20,40,40);
   }
 
   cubicBezier(p0, p1, p2, p3, t, pFinal) {
@@ -174,7 +187,7 @@ class Veh{
     }
     // ctx.clearRect(0,0,canvas.width,canvas.height);
     this.car(this.weightm.position.x,this.weightm.position.y,ctx);
-    
+    this.gscore=this.gscore+5;
   }
   draw(ctx,p0,p1,p2,p3){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -183,28 +196,16 @@ class Veh{
       ctx.beginPath();
       ctx.moveTo(p0[i].x, p0[i].y);
       ctx.bezierCurveTo(p1[i].x, p1[i].y, p2[i].x, p2[i].y, p3[i].x, p3[i].y);
-      // var t=0,pF=new Vec2(0,0);
-      // for(var j=0;j<500;j++){
-      //   // t=0.002;
-      //   console.log(t);
-      //   var pt = this.cubicBezier(p0[i],p1[i],p2[i],p3[i],t,pFinal);
-      //   t+=0.002;
-      //   ctx.drawImage(this.hill,pt.x,pt.y);
-       
-      //   // if(t>1){
-      //   //   t-=1;
-      //   // }
-      //   j+=0;
-      // }
-      // ctx.lineWidth=10;
+      ctx.lineWidth=20;
       ctx.stroke();
-      // ctx.strokeStyle='blue';
-      // ctx.lineTo(p0[1].x-((i-1)*500),height);
+      ctx.strokeStyle='green';
+      ctx.lineTo(p3[i].x,canvas.height);
       // if(i==6){
-      //   ctx.lineTo(p3[i].x,height);
+      ctx.lineTo(p0[i].x,canvas.height);
       // }
-      // ctx.fillStyle ="red";
-      // ctx.fill();
+      ctx.closePath();
+      ctx.fillStyle ="#66331d";
+      ctx.fill();
       
     } 
     
@@ -213,18 +214,17 @@ class Veh{
     
     this.img0.src='images/coin.png';
     ctx.drawImage(this.img0,5,35,30,30);
-  
-    this.imgb.src='images/brake-normal.png';
-    ctx.drawImage(this.imgb,35+Math.floor(0*canvas.width/4),canvas.height-100,80,80);
+    ctx.font = "20px Comic Sans MS";
+    ctx.fillText(this.gscore, 40, 58);
     
+    ctx.drawImage(this.imgb,35+Math.floor(0*canvas.width/4),canvas.height-100,80,80);  
     ctx.drawImage(this.boost,35+Math.floor(1*canvas.width/4),canvas.height-100,80,80);
-    ctx.drawImage(this.rpm,35+Math.floor(2*canvas.width/4),canvas.height-100,80,80);
-    
-    this.imgg.src='images/gas-normal.png';
+    ctx.drawImage(this.needle,35+Math.floor(1*canvas.width/4)+38,canvas.height-95,5,40);
+    ctx.drawImage(this.rpm,35+Math.floor(2*canvas.width/4),canvas.height-100,80,80);  
+    ctx.drawImage(this.needle,35+Math.floor(2*canvas.width/4)+38,canvas.height-95,5,40);
     ctx.drawImage(this.imgg,Math.floor(4*canvas.width/4)-120,canvas.height-100,80,80);
-
-
-    
+    this.imgb.src='images/brake-normal.png';
+    this.imgg.src='images/gas-normal.png';
     this.checkHill(p1,p0,p2,p3,ctx); 
     ctx.beginPath();
     this.update(ctx,null);
@@ -257,7 +257,7 @@ class Veh{
         this.friction=1;
       }
     }
-      if(pt.y-120<=this.sweightm){
+      if(pt.y-100<=this.sweightm){
         this.air=false;
       }else{
         this.air=true;
@@ -311,7 +311,7 @@ window.onload = function(){
 
   car1.intv = this.setInterval(function(){
     car1.draw(ctx,p0,p1,p2,p3);
-  },100);
+  },50);
   
   document.onkeypress = function (e) {
   var keycode;
@@ -331,6 +331,7 @@ window.onload = function(){
         }
         this.move=true;
       }
+      car1.imgb.src='images/brake-pressed.png';
     }
     if(keycode === 100){//d key
       if(p0[1].x>-13200){
@@ -340,6 +341,7 @@ window.onload = function(){
         }
         this.move=true;
       }
+      car1.imgg.src='images/gas-pressed.png';
     }
     if(keycode === 119){//w key
       
