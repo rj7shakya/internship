@@ -52,9 +52,9 @@ particle.prototype.update= function(canvas) {
 //   return Math.atan2(p2.position.y - this.position.y, p2.position.x - this.position.x);
 // }
 
-particle.prototype.checkWall= function(canvas){
-  if(this.position.y+2*this.radius > canvas.height){
-    this.velocity=this.velocity.scale(this.friction);
-    this.velocity.y=-this.velocity.y;
-  }
-}
+// particle.prototype.checkWall= function(canvas){
+//   if(this.position.y+2*this.radius > canvas.height){
+//     this.velocity=this.velocity.scale(this.friction);
+//     this.velocity.y=-this.velocity.y;
+//   }
+// }
