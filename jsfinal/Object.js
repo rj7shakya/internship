@@ -14,6 +14,11 @@ class Veh{
     this.velocity = new Vec2(0,3);
     this.ang = null;
     this.moving = true;
+    this.carV = 6;
+    this.carA = 0.005;
+    this.rotV = 6;
+    this.rotA = 0.01;
+
     this.onair = true;
     this.intv = null;
     this.fuel = null;
@@ -39,13 +44,18 @@ class Veh{
     this.coin25.src = 'images/25.png';
     this.coin500.src = 'images/500.png';
     this.coin100.src = 'images/100.png';
+    this.fwarn = new Image();
+    this.fwarn.src = 'images/fuel-warning.png';
       
     this.hill = new Image();
     this.hill.src = 'images/hill1.png';
     this.coins = [this.coin5,this.coin500,this.coin25,this.coin100];
-
+    this.reward=[];  
     this.score=0;
     this.coinNo=0;
+    this.health=100;
+    var that = this;
+    this.wheelRate=0.1;
     }
     set sweightm(y){
       this.weightm.position.y = y;
@@ -104,9 +114,11 @@ class Veh{
       
       this.weight.position.x=x+width/2;
       this.drawH(x+width/2,y-10,this.weight,context);
-      this.drawCir(x+10,y+height+10,this.weight2,context,null);
-      this.drawCir(x+width-10,y+10+height,this.weight3,context,null);
+      this.drawCir(x+10,y+height+10,this.weight2,context);
+      this.drawCir(x+width-10,y+10+height,this.weight3,context);
       context.restore();
+      // this.rotateWheel(x+10,y+height+10,context);
+      // this.rotateWheel(x+width-30,y-10+height,context);
     }
     drawCir(x,y,weight,context){
       var springPoint = new Vec2(x,y);
@@ -173,16 +185,20 @@ class Veh{
       }
       this.car(this.weightm.position.x,this.weightm.position.y,ctx);
       
+      if(this.health>0){
+        this.health-=0.05;
+      }
+
+      
       
     }
     draw(ctx,p0,p1,p2,p3){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for(var i=1;i<17;i++){
-        // var i=1;
         ctx.beginPath();
         ctx.moveTo(p0[i].x, p0[i].y);
         ctx.bezierCurveTo(p1[i].x, p1[i].y, p2[i].x, p2[i].y, p3[i].x, p3[i].y);
-        ctx.lineWidth=20;
+        ctx.lineWidth=40;
         ctx.stroke();
         ctx.strokeStyle='green';
         ctx.lineTo(p3[i].x,canvas.height);
@@ -192,30 +208,84 @@ class Veh{
         ctx.fill();
 
       }
-     
+      if(this.sag>10 && this.sag<40){
+        this.generateCurve(-2,p0,p1,p2,p3);
+      }else if(this.sag>-40 && this.sag<-10){
+        this.generateCurve(2,p0,p1,p2,p3);
+      }
       
       this.imgf.src='images/fuel.png';
-      ctx.drawImage(this.imgf,5,0,30,30);
-
-    //   var num = this.getRandomArbitrary(1,5);
-        for(var i=1;i<16;i++){
-            if(i%3==1){
-                if(i%2==0){
-                    ctx.drawImage(this.imgf,p3[i].x,p3[i].y-80,50,50);
-                }  
-                for(var j=0;j<6;j++){
-                    var x = Math.floor(p3[i].y-p1[i+1].y)/3;
-                    ctx.drawImage(this.coins[((j+4)%3)+1],p3[i].x+(j+1)*60,p3[i].y-100-x,50,50);
-                }
-            }
-        }
-        
+      var k=0;
+      ctx.drawImage(this.imgf,5,10,30,30);
       
+      for(var i=1;i<16;i++){
+        if(i%3==1){
+          // ctx.drawImage(this.imgf,p3[i].x,p3[i].y-80,50,50);
+          this.reward[(i-1)*6]={
+            src:this.imgf,
+            x:p3[i].x,
+            y:p3[i].y-80,
+          };  
+          for(var j=0;j<6;j++){
+            var x = Math.floor(p3[i].y-p1[i+1].y)/3;
+            // ctx.drawImage(this.coins[((j+4)%3)+1],p3[i].x+(j+1)*60,p3[i].y-100-x,50,50);
+            // console.log(this.reward[1]);
+            this.reward[j+1+(i-1)*6]={
+              src:this.coins[((j+4)%3)+1],
+              x:p3[i].x+(j+1)*60,
+              y:p3[i].y-100-x,
+            };
+          }
+        }
+      }
+
+      for(var i=1;i<this.reward.length;i++){
+        if (typeof this.reward[i] !== 'undefined') {
+          ctx.drawImage(this.reward[i].src,this.reward[i].x,this.reward[i].y,50,50);
+        }
+      }
+      this.checkCollide(ctx);
+      if(this.moving){
+        this.carV +=this.carV*this.carA; 
+      }else{
+        this.carV = 6;
+      }
+      if(this.air){
+        this.rotV +=this.rotV*this.rotA;
+      }else{
+        this.rotV=6;
+      }
+
+      console.log(this.air);
+      
+        
+      //assets
       this.img0.src='images/coin.png';
-      ctx.drawImage(this.img0,5,35,30,30);
+      ctx.drawImage(this.img0,5,55,30,30);
       ctx.font = "20px Comic Sans MS";
-      ctx.fillText('Distance '+Math.floor(this.gscore)+'m', canvas.width/2-50, 18);
-      ctx.fillText(this.coinNo,50,58)
+      ctx.fillStyle = "black";
+      ctx.fillText('Distance '+Math.floor(this.gscore)+' m', canvas.width/2-50, 28);
+      ctx.fillText(this.coinNo,55,78);
+      ctx.beginPath();
+      ctx.lineWidth=2;
+      ctx.strokeStyle='black';
+      ctx.rect(50,15,140,20);
+      ctx.stroke();
+      
+      //health with fuel
+      var col='';
+      if(this.health<30){
+        col='#FF0000';
+      }else{
+        col='#39ff14';
+      }
+      ctx.fillStyle=col;
+      ctx.fillRect(51,16,((this.health/100)*140)-2,18);
+      if(this.health<1){
+        ctx.drawImage(this.fwarn,canvas.width/3,canvas.height/3);
+        clearInterval(this.intv);
+      }
+      ctx.strokeStyle='green';
 
       ctx.drawImage(this.imgb,35+Math.floor(0*canvas.width/4),canvas.height-100,80,80);  
       ctx.drawImage(this.boost,35+Math.floor(1*canvas.width/4),canvas.height-100,80,80);
@@ -231,24 +301,49 @@ class Veh{
         
     }
 
-    checkCollide(){
-        //fuel check
-        if (rect1.x < rect2.x + rect2.width &&
-            rect1.x + rect1.width > rect2.x &&
-            rect1.y < rect2.y + rect2.height &&
-            rect1.y + rect1.height > rect2.y) {
-             // collision detected!
-         }
-        //coin check
-        for(var i=0;i<this.coins.length;i++){
-            if (rect1.x < rect2.x + rect2.width &&
-                rect1.x + rect1.width > rect2.x &&
-                rect1.y < rect2.y + rect2.height &&
-                rect1.y + rect1.height > rect2.y) {
-                // collision detected!
-            } 
+    checkCollide(ctx){
+      for(var i=0;i<this.reward.length;i++){
+        if (typeof this.reward[i] !== 'undefined') {
+          if (this.weightm.position.x < this.reward[i].x + 50 &&
+            this.weightm.position.x + 80 > this.reward[i].x &&
+            this.weightm.position.y < this.reward[i].y + 50 &&
+            this.weightm.position.y + 40 > this.reward[i].y) {
+            
+              if(this.reward[i].src.src.slice(29,this.reward[i].src.src.length)=='fuel.png'){
+                this.health=100;
+                this.reward.splice(i,i);
+                // console.log(this.reward[i].src.src.slice(29,this.reward[i].src.src.length));
+                // ctx.clearRect(this.reward[i].x,this.reward[i].y,50,50);
+              }else{
+                // console.log(this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4));
+                this.coinNo+=parseInt(this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4));
+                // ctx.clearRect(this.reward[i].x,this.reward[i].y,50,50);
+                // var c = 'this.coin'+this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4);
+                // this.JSON.parse(c).src='';
+                // this.reward[i].src.remove();
+                // this.reward.splice(i,i);
+                delete this.reward[i];
+                console.log(this.reward[i]);
+                console.log(this.reward.length);
+                // this.reward[i].y=500;
+              }
+          }
+            
         }
-        
+      }  
+    }
+
+    rotateWheel(x,y,context){
+      var that = this;
+      // setInterval(function(){
+        context.save();
+        context.translate(x,y);
+        context.rotate(that.ang*Math.PI/180);
+        context.translate(-x,-y);context.restore();
+        that.drawCir(x,y,that.weight2,context);
+        context.restore();
+      // },50);
+      
     }
 
     checkHill(p1,p0,p2,p3,ctx){
@@ -259,11 +354,11 @@ class Veh{
       var pt = this.cubicBezier(p0[i],p1[i],p2[i],p3[i],t,pFinal);
       
       if(this.sag>135 && this.sag<225){
-        if(pt.y-65<=this.sweightm){//collide
+        if(pt.y-85<=this.sweightm){//collide
           this.friction=0.2;
           this.velocity=this.velocity.scale(this.friction);
           this.velocity.y=-this.velocity.y;
-          this.update(ctx,pt.y-65);
+          this.update(ctx,pt.y-85);
           clearInterval(this.intv);
         }
     //   }else if(this.sag>5 && this.sag<40){
@@ -275,38 +370,32 @@ class Veh{
     //         this.air=false;
     //       }
       }else{
-        if(pt.y-75<=this.sweightm){//collide
+        if(pt.y-80<=this.sweightm){//collide
           this.friction=0.01;
           this.velocity=this.velocity.scale(this.friction);
           this.velocity.y=-this.velocity.y;
-          this.update(ctx,pt.y-75);
+          this.update(ctx,pt.y-80);
           this.air=false;
         }else if(pt.y >= this.sweightm+85){//non collide
-          this.gravity.y=0.9;
+          this.gravity.y=0.2;
           this.friction=1;
           this.air=true;
         }
       }
-        // if(pt.y-85<=this.sweightm){
-        //   this.air=false;   
-        // }else{
-        //   this.air=true;
-        //   this.gravity.y=0.1;
-        //   this.friction=0.2;
-        // }
         dis[g] = pt.y-this.sweightm-40-40;
         t+=0.002;
       }
       
       var min = Math.min(dis[10],dis[70]);
       var max = Math.max(dis[10],dis[70]);
+      this.weightm.y=-min+pt.y;
       var angle = (Math.atan((dis[70]-dis[10])/(70-10)))*180/Math.PI;
       if(!this.air){
         if(Math.abs(this.sag)<60){
-          this.sag=angle;
+          this.sag=angle/2;
         }
       }
-      console.log(min,max,this.sag,this.air);
+      // console.log(min,max,this.sag,this.air);
     }
     getRandomArbitrary(min, max) {
       return Math.floor(Math.random() * (max - min) + min);
