@@ -18,6 +18,7 @@ class Veh{
     this.carA = 0.005;
     this.rotV = 6;
     this.rotA = 0.01;
+    this.val = 0;
 
     this.onair = true;
     this.intv = null;
@@ -59,6 +60,9 @@ class Veh{
     }
     set sweightm(y){
       this.weightm.position.y = y;
+    }
+    set sweightmx(x){
+      this.weightm.position.x = x;
     }
     get sweightm(){
       return this.weightm.position.y;
@@ -116,6 +120,8 @@ class Veh{
       this.drawH(x+width/2,y-10,this.weight,context);
       this.drawCir(x+10,y+height+10,this.weight2,context);
       this.drawCir(x+width-10,y+10+height,this.weight3,context);
+      this.sweightm = this.weightm.position.y;
+      this.sweightmx = this.weightm.position.x;
       context.restore();
       // this.rotateWheel(x+10,y+height+10,context);
       // this.rotateWheel(x+width-30,y-10+height,context);
@@ -188,9 +194,6 @@ class Veh{
       if(this.health>0){
         this.health-=0.05;
       }
-
-      
-      
     }
     draw(ctx,p0,p1,p2,p3){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -217,34 +220,14 @@ class Veh{
       this.imgf.src='images/fuel.png';
       var k=0;
       ctx.drawImage(this.imgf,5,10,30,30);
-      
-      for(var i=1;i<16;i++){
-        if(i%3==1){
-          // ctx.drawImage(this.imgf,p3[i].x,p3[i].y-80,50,50);
-          this.reward[(i-1)*6]={
-            src:this.imgf,
-            x:p3[i].x,
-            y:p3[i].y-80,
-          };  
-          for(var j=0;j<6;j++){
-            var x = Math.floor(p3[i].y-p1[i+1].y)/3;
-            // ctx.drawImage(this.coins[((j+4)%3)+1],p3[i].x+(j+1)*60,p3[i].y-100-x,50,50);
-            // console.log(this.reward[1]);
-            this.reward[j+1+(i-1)*6]={
-              src:this.coins[((j+4)%3)+1],
-              x:p3[i].x+(j+1)*60,
-              y:p3[i].y-100-x,
-            };
-          }
-        }
-      }
 
-      for(var i=1;i<this.reward.length;i++){
+      for(var i=0;i<this.reward.length;i++){
         if (typeof this.reward[i] !== 'undefined') {
           ctx.drawImage(this.reward[i].src,this.reward[i].x,this.reward[i].y,50,50);
         }
       }
       this.checkCollide(ctx);
+      this.genpower(p3,p1,null);
       if(this.moving){
         this.carV +=this.carV*this.carA; 
       }else{
@@ -256,9 +239,7 @@ class Veh{
         this.rotV=6;
       }
 
-      console.log(this.air);
       
-        
       //assets
       this.img0.src='images/coin.png';
       ctx.drawImage(this.img0,5,55,30,30);
@@ -298,7 +279,7 @@ class Veh{
       this.checkHill(p1,p0,p2,p3,ctx); 
       ctx.beginPath();
       this.update(ctx,null);
-        
+      // this.rotatet(35+Math.floor(2*canvas.width/4)+38,canvas.height-95,ctx);  
     }
 
     checkCollide(ctx){
@@ -311,40 +292,100 @@ class Veh{
             
               if(this.reward[i].src.src.slice(29,this.reward[i].src.src.length)=='fuel.png'){
                 this.health=100;
-                this.reward.splice(i,i);
-                // console.log(this.reward[i].src.src.slice(29,this.reward[i].src.src.length));
-                // ctx.clearRect(this.reward[i].x,this.reward[i].y,50,50);
-              }else{
-                // console.log(this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4));
-                this.coinNo+=parseInt(this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4));
-                // ctx.clearRect(this.reward[i].x,this.reward[i].y,50,50);
-                // var c = 'this.coin'+this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4);
-                // this.JSON.parse(c).src='';
-                // this.reward[i].src.remove();
-                // this.reward.splice(i,i);
                 delete this.reward[i];
-                console.log(this.reward[i]);
-                console.log(this.reward.length);
-                // this.reward[i].y=500;
+              }else{
+                this.coinNo+=parseInt(this.reward[i].src.src.slice(29,this.reward[i].src.src.length-4));
+                delete this.reward[i];
               }
           }
             
         }
-      }  
+      }
     }
 
-    rotateWheel(x,y,context){
-      var that = this;
-      // setInterval(function(){
+    // rotateWheel(x,y,context){
+    //   var that = this;
+    //   // setInterval(function(){
+    //     context.save();
+    //   //   context.translate(x,y);
+    //   //   context.rotate(that.ang*Math.PI/180);
+    //   //   context.translate(-x,-y);context.restore();
+    //     // that.drawCir(x,y,that.weight2,context);
+        
+    //   // },50);
+    //   var i=0;
+    //   // mainLoop(23);
+    //   function mainLoop(time) {
+        
+    //     context.save();
+    //     context.translate(x+20, y);
+    //     console.log(x,y);
+    //     context.rotate(Math.abs(i)/2*Math.PI/180);
+    //     that.drawCir(x,y,that.weight2,context);
+    //     context.translate(-x-20, -y);
+    //     context.restore();
+    //     i+=10;
+    //     requestAnimationFrame(mainLoop);
+    //   }
+    //   context.restore();
+    // }
+
+    // rotatet(x,y,context){
+      // 
+      // var that = this;
+      // mainLoop(23);
+      mainLoop(x,y,context) {
+        var i=this.val;
+        // console.log(this.needle);
         context.save();
-        context.translate(x,y);
-        context.rotate(that.ang*Math.PI/180);
-        context.translate(-x,-y);context.restore();
-        that.drawCir(x,y,that.weight2,context);
+        context.translate(x+2, y+40);
+        context.rotate(i*Math.PI/180);
+        context.translate(-x-2, -y-40);
+        context.drawImage(this.needle,x,y+40,3,40);
         context.restore();
-      // },50);
+        context.save();
+        context.translate(2*x/3+1, y+38);
+        context.rotate(i*Math.PI/180);
+        context.translate(-2*x/3-1, -y-38);
+        context.drawImage(this.needle,2*x/3-25,y+40,3,40);
+        context.restore();
+        context.save();
+        context.translate(this.sweightmx+10, this.sweightm+50);
+        context.rotate((i*10)*Math.PI/180);
+        context.translate(-this.sweightmx-10, -this.sweightm-50);
+        context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
+        context.restore();
+        this.val+=1;
+        // console.log(i);
+        // context.restore();
+        // requestAnimationFrame(mainLoop);
+      }
+
+      rotateWheel(context){
+        // var i;
+        if(this.carV>6){
+          this.val+=10;
+        }else if(!this.move){
+          this.val=3;
+        }else if(this.carV<6){
+          this.val-=10;
+        }
+        context.save();
+        context.translate(this.sweightmx+10, this.sweightm+50);
+        context.rotate(-(this.val*10)*Math.PI/180);
+        context.translate(-this.sweightmx-10, -this.sweightm-50);
+        context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
+        context.restore();
+        context.save();
+        context.translate(this.sweightmx+70, this.sweightm+50);
+        context.rotate(-(this.val*10)*Math.PI/180);
+        context.translate(-this.sweightmx-10, -this.sweightm-50);
+        context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
+        context.restore();
+        this.val+=5;
+      }
       
-    }
+    // }
 
     checkHill(p1,p0,p2,p3,ctx){
       var i=Math.floor((500-p0[1].x+95)/495);
@@ -361,14 +402,6 @@ class Veh{
           this.update(ctx,pt.y-85);
           clearInterval(this.intv);
         }
-    //   }else if(this.sag>5 && this.sag<40){
-    //     if(pt.y-75<=this.sweightm){//incline-collide
-    //         this.friction=0.01;
-    //         this.velocity=this.velocity.scale(this.friction);
-    //         this.velocity.y=-this.velocity.y;
-    //         this.update(ctx,pt.y-75);
-    //         this.air=false;
-    //       }
       }else{
         if(pt.y-80<=this.sweightm){//collide
           this.friction=0.01;
@@ -395,9 +428,33 @@ class Veh{
           this.sag=angle/2;
         }
       }
-      // console.log(min,max,this.sag,this.air);
     }
     getRandomArbitrary(min, max) {
       return Math.floor(Math.random() * (max - min) + min);
     }
+
+    genpower(p3,p1,z){
+      for(var i=1;i<16;i++){
+        if(i%3==1){
+          if ((typeof this.reward[(i-1)*6] != 'undefined')||(z!=null)) {
+            this.reward[(i-1)*6]={
+              src:this.imgf,
+              x:p3[i].x,
+              y:p3[i].y-80,
+            };  
+          }
+          for(var j=0;j<6;j++){
+            var x = Math.floor(p3[i].y-p1[i+1].y)/3;
+            if ((typeof this.reward[j+1+(i-1)*6] != 'undefined')||(z!=null)) {
+              this.reward[j+1+(i-1)*6]={
+                src:this.coins[((j+4)%3)+1],
+                x:p3[i].x+(j+1)*60,
+                y:p3[i].y-100-x,
+              };
+            }
+          }
+        }
+      }
+    }
+    
   }
