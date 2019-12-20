@@ -18,7 +18,7 @@
   start();
   // var s = new Start();
   // s.show(ctx);
-  // // ctx.drawImage(s.img,0,50,700,500);
+  // ctx.drawImage(s.img,0,50,700,500);
   // s.playbtn(410,520,ctx);
   // check(canvas,s,car1);
   function start(){
