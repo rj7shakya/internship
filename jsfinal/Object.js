@@ -273,7 +273,7 @@ class Veh{
       if(this.health<1){
         ctx.drawImage(this.fwarn,canvas.width/3,canvas.height/3);
         clearInterval(this.intv);
-        // ctx.drawImage(this.res,10,10);
+        this.gameOver(ctx);
       }
       ctx.strokeStyle='green';
 
@@ -313,7 +313,6 @@ class Veh{
     }
     rotateMeter(x,y,context) {
       var i=this.carV;
-      console.log(this.needle);
       context.save();
       context.translate(x+2, y+40);
       context.rotate(i*10*Math.PI/180);
@@ -327,7 +326,6 @@ class Veh{
       context.drawImage(this.needle,((x-73)/2-9),y+38,5,35);
       context.restore();
       this.val+=1;
-      console.log(this.ang);
     }
 
     rotateWheel(context){
@@ -354,13 +352,21 @@ class Veh{
       this.val+=5;
     }
 
+    gameOver(ctx){
+      ctx.drawImage(this.res,10,20,400,480);
+      ctx.font = "40px Comic Sans MS";
+      ctx.fillStyle = "white";
+      ctx.fillText('Score '+Math.floor(this.gscore)+' m', 125, 320);
+      ctx.fillText('Hi-score '+Math.floor(this.highscore)+' m', 105, 370);
+      ctx.fillText('Coins '+Math.floor(this.coinNo)+'', 155, 70);
+      ctx.font = "30px Comic Sans MS";
+      ctx.fillText("Press 'r' to restart",455, 370);
+    }
+
     checkHill(p1,p0,p2,p3,ctx){
       var i=Math.floor((500-p0[1].x+95)/495);
       var t=(-p0[i].x+50)/495;
       var dis = [];
-      // if(){
-
-      // }
 
     for(var g=0;g<80;g++){
       var pt = this.cubicBezier(p0[i],p1[i],p2[i],p3[i],t,pFinal);
@@ -372,14 +378,7 @@ class Veh{
           this.velocity.y=-this.velocity.y;
           this.update(ctx,pt.y-85);
           clearInterval(this.intv);
-          ctx.drawImage(this.res,10,20,400,480);
-          ctx.font = "40px Comic Sans MS";
-          ctx.fillStyle = "white";
-          ctx.fillText('Score '+Math.floor(this.gscore)+' m', 125, 320);
-          ctx.fillText('Hi-score '+Math.floor(this.highscore)+' m', 105, 370);
-          ctx.fillText('Coins '+Math.floor(this.coinNo)+'', 155, 70);
-          ctx.font = "30px Comic Sans MS";
-          ctx.fillText("Press 'r' to restart",455, 370);
+          this.gameOver(ctx);
         }
       }else{
         if(pt.y-80<=this.sweightm){//collide

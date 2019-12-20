@@ -16,8 +16,12 @@
     p3[i] = {x: p0[i].x+500,y: car1.getRandomArbitrary(200,300)};
   }
   start();
+  // var s = new Start();
+  // s.show(ctx);
+  // // ctx.drawImage(s.img,0,50,700,500);
+  // s.playbtn(410,520,ctx);
+  // check(canvas,s,car1);
   function start(){
-    
     t = 0,
     direction = 0.1,
     i=0;
@@ -29,6 +33,18 @@
       car1.rotateMeter(35+Math.floor(2*canvas.width/4)+38,canvas.height-95,ctx);
       // car1.rotateWheel(ctx);
     },50);
+  }
+
+  function check(canvas,s,car1){
+    canvas.addEventListener('click', function(evt) {
+      var mousePos = s.getMousePos(canvas, evt);
+      if (s.isInside(mousePos,s.btn)) {
+          // alert('clicked inside rect');
+          document.location.reload();
+          clearInterval(car1.intv);
+          start();
+      }   
+    }, false);
   }
   
   
@@ -44,7 +60,7 @@
       if(p0[1].x<-5){
         
         if(car1.air){
-          car1.sag=car1.sag-car1.rotV;
+          car1.sag=car1.sag-car1.rotV/2;
           car1.generateCurve(car1.carV,p0,p1,p2,p3);
         }else{
           car1.generateCurve(car1.carV,p0,p1,p2,p3);
@@ -77,6 +93,14 @@
       document.location.reload();
       clearInterval(car1.intv);
       start();
+    }
+    if(keycode === 120){//x key
+      // document.location.reload();
+      // clearInterval(car1.intv);
+      // var s = new Start();
+      // s.show(ctx);
+      // s.playbtn(410,520,ctx);
+      // check(canvas,s,car1);
     }
   }.bind(this);  
 // }
