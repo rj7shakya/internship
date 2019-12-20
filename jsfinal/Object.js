@@ -47,15 +47,20 @@ class Veh{
     this.coin100.src = 'images/100.png';
     this.fwarn = new Image();
     this.fwarn.src = 'images/fuel-warning.png';
+    this.res = new Image();
+    this.res.src = 'images/share-result.png';
       
     this.hill = new Image();
     this.hill.src = 'images/hill1.png';
     this.coins = [this.coin5,this.coin500,this.coin25,this.coin100];
     this.reward=[];  
     this.score=0;
+    this.localSN='hillC';
+    this.highscore=0;
     this.coinNo=0;
     this.health=100;
     var that = this;
+    this.angval=null;
     this.wheelRate=0.1;
     }
     set sweightm(y){
@@ -194,6 +199,9 @@ class Veh{
       if(this.health>0){
         this.health-=0.05;
       }
+      this.checkHs();
+      
+
     }
     draw(ctx,p0,p1,p2,p3){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -245,7 +253,7 @@ class Veh{
       ctx.drawImage(this.img0,5,55,30,30);
       ctx.font = "20px Comic Sans MS";
       ctx.fillStyle = "black";
-      ctx.fillText('Distance '+Math.floor(this.gscore)+' m', canvas.width/2-50, 28);
+      ctx.fillText('Distance '+Math.floor(this.gscore)+' m'+'(best:'+Math.floor(this.highscore)+' m)', canvas.width/2-50, 28);
       ctx.fillText(this.coinNo,55,78);
       ctx.beginPath();
       ctx.lineWidth=2;
@@ -265,14 +273,15 @@ class Veh{
       if(this.health<1){
         ctx.drawImage(this.fwarn,canvas.width/3,canvas.height/3);
         clearInterval(this.intv);
+        // ctx.drawImage(this.res,10,10);
       }
       ctx.strokeStyle='green';
 
       ctx.drawImage(this.imgb,35+Math.floor(0*canvas.width/4),canvas.height-100,80,80);  
       ctx.drawImage(this.boost,35+Math.floor(1*canvas.width/4),canvas.height-100,80,80);
-      ctx.drawImage(this.needle,35+Math.floor(1*canvas.width/4)+38,canvas.height-95,5,40);
+      // ctx.drawImage(this.needle,35+Math.floor(1*canvas.width/4)+38,canvas.height-95,5,40);
       ctx.drawImage(this.rpm,35+Math.floor(2*canvas.width/4),canvas.height-100,80,80);  
-      ctx.drawImage(this.needle,35+Math.floor(2*canvas.width/4)+38,canvas.height-95,5,40);
+      // ctx.drawImage(this.needle,35+Math.floor(2*canvas.width/4)+38,canvas.height-95,5,40);
       ctx.drawImage(this.imgg,Math.floor(4*canvas.width/4)-120,canvas.height-100,80,80);
       this.imgb.src='images/brake-normal.png';
       this.imgg.src='images/gas-normal.png';
@@ -302,95 +311,57 @@ class Veh{
         }
       }
     }
+    rotateMeter(x,y,context) {
+      var i=this.carV;
+      console.log(this.needle);
+      context.save();
+      context.translate(x+2, y+40);
+      context.rotate(i*10*Math.PI/180);
+      context.translate(-x-2, -y-40);
+      context.drawImage(this.needle,x,y+40,5,35);
+      context.restore();
+      context.save();
+      context.translate(((x-73)/2+35)+39, y+38);
+      context.rotate((i+this.carV)*10*Math.PI/180);
+      context.translate(-((x-73)/2+35)+39, -y-38);
+      context.drawImage(this.needle,((x-73)/2-9),y+38,5,35);
+      context.restore();
+      this.val+=1;
+      console.log(this.ang);
+    }
 
-    // rotateWheel(x,y,context){
-    //   var that = this;
-    //   // setInterval(function(){
-    //     context.save();
-    //   //   context.translate(x,y);
-    //   //   context.rotate(that.ang*Math.PI/180);
-    //   //   context.translate(-x,-y);context.restore();
-    //     // that.drawCir(x,y,that.weight2,context);
-        
-    //   // },50);
-    //   var i=0;
-    //   // mainLoop(23);
-    //   function mainLoop(time) {
-        
-    //     context.save();
-    //     context.translate(x+20, y);
-    //     console.log(x,y);
-    //     context.rotate(Math.abs(i)/2*Math.PI/180);
-    //     that.drawCir(x,y,that.weight2,context);
-    //     context.translate(-x-20, -y);
-    //     context.restore();
-    //     i+=10;
-    //     requestAnimationFrame(mainLoop);
-    //   }
-    //   context.restore();
-    // }
-
-    // rotatet(x,y,context){
-      // 
-      // var that = this;
-      // mainLoop(23);
-      mainLoop(x,y,context) {
-        var i=this.val;
-        // console.log(this.needle);
-        context.save();
-        context.translate(x+2, y+40);
-        context.rotate(i*Math.PI/180);
-        context.translate(-x-2, -y-40);
-        context.drawImage(this.needle,x,y+40,3,40);
-        context.restore();
-        context.save();
-        context.translate(2*x/3+1, y+38);
-        context.rotate(i*Math.PI/180);
-        context.translate(-2*x/3-1, -y-38);
-        context.drawImage(this.needle,2*x/3-25,y+40,3,40);
-        context.restore();
-        context.save();
-        context.translate(this.sweightmx+10, this.sweightm+50);
-        context.rotate((i*10)*Math.PI/180);
-        context.translate(-this.sweightmx-10, -this.sweightm-50);
-        context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
-        context.restore();
-        this.val+=1;
-        // console.log(i);
-        // context.restore();
-        // requestAnimationFrame(mainLoop);
+    rotateWheel(context){
+      // var i;
+      if(this.carV>6){
+        this.val+=10;
+      }else if(!this.move){
+        this.val=3;
+      }else if(this.carV<6){
+        this.val-=10;
       }
-
-      rotateWheel(context){
-        // var i;
-        if(this.carV>6){
-          this.val+=10;
-        }else if(!this.move){
-          this.val=3;
-        }else if(this.carV<6){
-          this.val-=10;
-        }
-        context.save();
-        context.translate(this.sweightmx+10, this.sweightm+50);
-        context.rotate(-(this.val*10)*Math.PI/180);
-        context.translate(-this.sweightmx-10, -this.sweightm-50);
-        context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
-        context.restore();
-        context.save();
-        context.translate(this.sweightmx+70, this.sweightm+50);
-        context.rotate(-(this.val*10)*Math.PI/180);
-        context.translate(-this.sweightmx-10, -this.sweightm-50);
-        context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
-        context.restore();
-        this.val+=5;
-      }
-      
-    // }
+      context.save();
+      context.translate(this.sweightmx+10, this.sweightm+50);
+      context.rotate(-(this.val*10)*Math.PI/180);
+      context.translate(-this.sweightmx-10, -this.sweightm-50);
+      context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
+      context.restore();
+      context.save();
+      context.translate(this.sweightmx+70, this.sweightm+50);
+      context.rotate(-(this.val*10)*Math.PI/180);
+      context.translate(-this.sweightmx-10, -this.sweightm-50);
+      context.drawImage(this.imgc,this.sweightmx-10, this.sweightm+30,40,40);
+      context.restore();
+      this.val+=5;
+    }
 
     checkHill(p1,p0,p2,p3,ctx){
       var i=Math.floor((500-p0[1].x+95)/495);
       var t=(-p0[i].x+50)/495;
       var dis = [];
+      // if(){
+
+      // }
+
     for(var g=0;g<80;g++){
       var pt = this.cubicBezier(p0[i],p1[i],p2[i],p3[i],t,pFinal);
       
@@ -401,6 +372,14 @@ class Veh{
           this.velocity.y=-this.velocity.y;
           this.update(ctx,pt.y-85);
           clearInterval(this.intv);
+          ctx.drawImage(this.res,10,20,400,480);
+          ctx.font = "40px Comic Sans MS";
+          ctx.fillStyle = "white";
+          ctx.fillText('Score '+Math.floor(this.gscore)+' m', 125, 320);
+          ctx.fillText('Hi-score '+Math.floor(this.highscore)+' m', 105, 370);
+          ctx.fillText('Coins '+Math.floor(this.coinNo)+'', 155, 70);
+          ctx.font = "30px Comic Sans MS";
+          ctx.fillText("Press 'r' to restart",455, 370);
         }
       }else{
         if(pt.y-80<=this.sweightm){//collide
@@ -455,6 +434,12 @@ class Veh{
           }
         }
       }
+    }
+
+    checkHs(){
+      this.highscore = localStorage.getItem(this.localSN) ==null ? 0 :localStorage.getItem(this.localSN);
+      this.highscore = Math.max(this.score,this.highscore);
+      localStorage.setItem(this.localSN,this.highscore);
     }
     
   }

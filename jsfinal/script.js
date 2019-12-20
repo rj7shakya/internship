@@ -1,9 +1,9 @@
 
-window.onload = function(){
+// window.onload = function(){
   var canvas = this.document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
-    width = canvas.width = window.innerWidth,
-    height = canvas.height = window.innerHeight;
+    width = canvas.width = 700,
+    height = canvas.height = 600;
   var c = new particle();
   var car1 = new Veh();
   car1.ang = null;
@@ -15,26 +15,22 @@ window.onload = function(){
     p2[i] = {x: p0[i].x+car1.getRandomArbitrary(200,350),y: car1.getRandomArbitrary(200,400)};
     p3[i] = {x: p0[i].x+500,y: car1.getRandomArbitrary(200,300)};
   }
-  t = 0,
-  direction = 0.1,
-  i=0;
-  pFinal = {};
-  car1.car(20,20,ctx,p0,p1,p2,p3,null);
-  car1.genpower(p3,p1,3);
-  car1.intv = this.setInterval(function(){
-    car1.draw(ctx,p0,p1,p2,p3);
-    car1.mainLoop(35+Math.floor(2*canvas.width/4)+38,canvas.height-95,ctx);
-    car1.rotateWheel(ctx);
-    // var x=35+Math.floor(2*canvas.width/4)+38,
-    // y=canvas.height-95;
-    // ctx.save();
-    // ctx.translate(2*x/3+1-40, y+38);
-    // ctx.rotate(i*Math.PI/180);
-    // ctx.translate(-2*x/3-1+40, -y-38);
-    // ctx.drawImage(car1.needle,2*x/3-40,y+40,3,40);
-    // ctx.restore();
-    // i++;
-  },50);
+  start();
+  function start(){
+    
+    t = 0,
+    direction = 0.1,
+    i=0;
+    pFinal = {};
+    car1.car(20,20,ctx,p0,p1,p2,p3,null);
+    car1.genpower(p3,p1,3);
+    car1.intv =setInterval(function(){
+      car1.draw(ctx,p0,p1,p2,p3);
+      car1.rotateMeter(35+Math.floor(2*canvas.width/4)+38,canvas.height-95,ctx);
+      // car1.rotateWheel(ctx);
+    },50);
+  }
+  
   
   document.onkeypress = function (e) {
   var keycode;
@@ -62,7 +58,7 @@ window.onload = function(){
       }
     }
     if(keycode === 100){//d key
-      if(p0[1].x>-13200){
+      if(p0[1].x>-7700){
         
         car1.generateCurve(-car1.carV,p0,p1,p2,p3);
         
@@ -76,8 +72,11 @@ window.onload = function(){
       }
       car1.imgg.src='images/gas-pressed.png';
     }
-    if(keycode === 119){//w key
-      
+    if(keycode === 114){//r key
+      // ctx.clearRect(0,0,canvas.width,canvas.height);
+      document.location.reload();
+      clearInterval(car1.intv);
+      start();
     }
   }.bind(this);  
-}
+// }
